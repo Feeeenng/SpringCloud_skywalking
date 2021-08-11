@@ -1,0 +1,59 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: es-v1
+  namespace: kubesphere-sample-dev
+  labels:
+    app: es
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: es
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: es
+        version: v1
+    spec:
+      volumes:
+        - name: volume-3fqaxz
+          persistentVolumeClaim:
+            claimName: es
+        - name: volume-189jem
+          configMap:
+            name: es
+            defaultMode: 420
+      containers:
+        - name: container-i8f7tg
+          image: 'elasticsearch:7.14.0'
+          ports:
+            - name: tcp-9200
+              containerPort: 9200
+              protocol: TCP
+            - name: tcp-9300
+              containerPort: 9300
+              protocol: TCP
+          env:
+            - name: ES_JAVA_OPTS
+              value: '-Xms512m -Xmx512m'
+          resources:
+            limits:
+              cpu: '2'
+              memory: 2000Mi
+          volumeMounts:
+            - name: volume-189jem
+              readOnly: true
+              mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
+              subPath: elasticsearch.yml
+            - name: volume-3fqaxz
+              mountPath: /usr/share/elasticsearch/data/
+          imagePullPolicy: IfNotPresent
+      restartPolicy: Always
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%

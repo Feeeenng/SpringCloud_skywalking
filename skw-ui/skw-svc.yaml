@@ -1,0 +1,23 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: skw-ui
+  namespace: kubesphere-sample-dev
+  labels:
+    app: skw-ui
+    app.kubernetes.io/name: skw-ui
+    app.kubernetes.io/version: v1
+    version: v1
+spec:
+  ports:
+    - name: http-web
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+      nodePort: 31124
+  selector:
+    app: skw-ui
+    app.kubernetes.io/name: skw-ui
+    app.kubernetes.io/version: v1
+  type: NodePort
+  externalTrafficPolicy: Cluster

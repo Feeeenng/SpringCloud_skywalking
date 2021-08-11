@@ -1,0 +1,15 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: skw-oap-configmap
+  namespace: kubesphere-sample-dev
+data:
+  SW_CLUSTER: standalone
+  SW_CORE_GRPC_PORT: '11800'
+  SW_CORE_REST_PORT: '12800'
+  SW_ES_PASSWORD: kubesphere
+  SW_ES_USER: kubesphere
+  SW_NAMESPACE: skywalking_kbs_dev
+  SW_STORAGE: elasticsearch7
+  SW_STORAGE_ES_CLUSTER_NODES: 'es.kubesphere-sample-dev.svc:9200'
+  SW_STORAGE_ES_HTTP_PROTOCOL: http
