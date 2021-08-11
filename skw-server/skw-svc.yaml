@@ -1,0 +1,29 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: skw-oap
+  namespace: kubesphere-sample-dev
+  labels:
+    app: skw-oap
+    app.kubernetes.io/name: skw-oap
+    app.kubernetes.io/version: v1
+    version: v1
+spec:
+  ports:
+    - name: http-12800
+      protocol: TCP
+      port: 12800
+      targetPort: 12800
+      nodePort: 30657
+    - name: grpc-11800
+      protocol: TCP
+      port: 11800
+      targetPort: 11800
+      nodePort: 32605
+  selector:
+    app: skw-oap
+    app.kubernetes.io/name: skw-oap
+    app.kubernetes.io/version: v1
+  type: NodePort
+  sessionAffinity: None
+  externalTrafficPolicy: Cluster

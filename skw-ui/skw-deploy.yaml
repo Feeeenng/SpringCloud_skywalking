@@ -1,0 +1,65 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: skw-ui-v1
+  namespace: kubesphere-sample-dev
+  labels:
+    app: skw-ui
+    app.kubernetes.io/name: skw-ui
+    app.kubernetes.io/version: v1
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: skw-ui
+      app.kubernetes.io/name: skw-ui
+      app.kubernetes.io/version: v1
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: skw-ui
+        app.kubernetes.io/name: skw-ui
+        app.kubernetes.io/version: v1
+        version: v1
+    spec:
+      volumes:
+        - name: volume-gzzl4v
+          persistentVolumeClaim:
+            claimName: ui-pv
+      containers:
+        - name: container-99h058
+          image: 'apache/skywalking-ui:8.5.0'
+          ports:
+            - name: http-web
+              containerPort: 8080
+              protocol: TCP
+          env:
+            - name: SW_OAP_ADDRESS
+              valueFrom:
+                configMapKeyRef:
+                  name: skw-ui-configmap
+                  key: SW_OAP_ADDRESS
+            - name: SW_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  name: skw-ui-configmap
+                  key: SW_TIMEOUT
+          resources:
+            limits:
+              cpu: '1'
+              memory: 1000Mi
+            requests:
+              cpu: 500m
+              memory: 200Mi
+          volumeMounts:
+            - name: volume-gzzl4v
+              mountPath: /skywalking/data
+          imagePullPolicy: IfNotPresent
+      restartPolicy: Always
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%

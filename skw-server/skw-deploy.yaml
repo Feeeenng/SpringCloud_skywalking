@@ -1,0 +1,90 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: skw-oap-v1
+  namespace: kubesphere-sample-dev
+  labels:
+    app: skw-oap
+    app.kubernetes.io/name: skw-oap
+    app.kubernetes.io/version: v1
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: skw-oap
+      app.kubernetes.io/name: skw-oap
+      app.kubernetes.io/version: v1
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: skw-oap
+        app.kubernetes.io/name: skw-oap
+        app.kubernetes.io/version: v1
+        version: v1
+    spec:
+      volumes:
+        - name: volume-g3o73j
+          persistentVolumeClaim:
+            claimName: oap-pv
+      containers:
+        - name: container-5v9u6c
+          image: 'apache/skywalking-oap-server:8.5.0-es7'
+          ports:
+            - name: http-12800
+              containerPort: 12800
+              protocol: TCP
+            - name: grpc-11800
+              containerPort: 11800
+              protocol: TCP
+          env:
+            - name: SW_NAMESPACE
+              valueFrom:
+                configMapKeyRef:
+                  name: skw-oap-configmap
+                  key: SW_NAMESPACE
+            - name: SW_STORAGE
+              valueFrom:
+                configMapKeyRef:
+                  name: skw-oap-configmap
+                  key: SW_STORAGE
+            - name: SW_STORAGE_ES_CLUSTER_NODES
+              valueFrom:
+                configMapKeyRef:
+                  name: skw-oap-configmap
+                  key: SW_STORAGE_ES_CLUSTER_NODES
+            - name: SW_STORAGE_ES_HTTP_PROTOCOL
+              valueFrom:
+                configMapKeyRef:
+                  name: skw-oap-configmap
+                  key: SW_STORAGE_ES_HTTP_PROTOCOL
+            - name: SW_ES_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: skw-oap-configmap
+                  key: SW_ES_USER
+            - name: SW_ES_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: skw-oap-configmap
+                  key: SW_ES_PASSWORD
+            - name: SW_CLUSTER
+              valueFrom:
+                configMapKeyRef:
+                  name: skw-oap-configmap
+                  key: SW_CLUSTER
+          resources:
+            limits:
+              cpu: '2'
+              memory: 2000Mi
+          volumeMounts:
+            - name: volume-g3o73j
+              mountPath: /skywalking/data
+          imagePullPolicy: IfNotPresent
+      restartPolicy: Always
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
