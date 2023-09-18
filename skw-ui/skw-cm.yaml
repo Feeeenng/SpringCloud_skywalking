@@ -4,5 +4,5 @@ metadata:
   name: skw-ui-configmap
   namespace: kubesphere-sample-dev
 data:
-  SW_OAP_ADDRESS: 'skw-oap.kubesphere-sample-dev.svc:12800'
+  SW_OAP_ADDRESS: 'http://skw-oap.kubesphere-sample-dev.svc:12800'
   SW_TIMEOUT: '20000'
