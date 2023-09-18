@@ -59,16 +59,6 @@ spec:
                 configMapKeyRef:
                   name: skw-oap-configmap
                   key: SW_STORAGE_ES_HTTP_PROTOCOL
-            - name: SW_ES_USER
-              valueFrom:
-                configMapKeyRef:
-                  name: skw-oap-configmap
-                  key: SW_ES_USER
-            - name: SW_ES_PASSWORD
-              valueFrom:
-                configMapKeyRef:
-                  name: skw-oap-configmap
-                  key: SW_ES_PASSWORD
             - name: SW_CLUSTER
               valueFrom:
                 configMapKeyRef:
