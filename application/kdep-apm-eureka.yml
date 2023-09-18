@@ -1,5 +1,5 @@
-apiVersion: apps/v1
 kind: Deployment
+apiVersion: apps/v1
 metadata:
   name: apm-eureka
   namespace: kubesphere-sample-dev
@@ -16,32 +16,36 @@ spec:
       labels:
         app: apm-eureka
     spec:
+      volumes:
+        - name: skywalking-agent
+          emptyDir: {}
       initContainers:
         - name: sidecar
-          image: apache/skywalking-base:8.5.0-es7 # 容器镜像，包含静态资源文件
-          imagePullPolicy: IfNotPresent
-          command: ["cp", "-r", "/skywalking/agent", "/sidecar"]
+          image: 'apache/skywalking-java-agent:9.0.0-alpine'
+          command:
+            - cp
+            - '-r'
+            - /skywalking/agent
+            - /agent
+          resources: {}
           volumeMounts:
-            - name: sidecar
-              mountPath: /sidecar
+            - name: skywalking-agent
+              mountPath: /agent
       containers:
         - name: apm-eureka
-          image: evanxuhe/apm-eureka:6.1.0
-          imagePullPolicy: IfNotPresent
-          env:
-            - name: JAVA_OPTS
-              value: -javaagent:/sidecar/agent/skywalking-agent.jar
-            - name: SW_AGENT_NAME
-              value: apm-eureka
-            - name: SW_AGENT_COLLECTOR_BACKEND_SERVICES
-              value: skw-oap.kubesphere-sample-dev.svc:11800 # skywalk oap 后端服务
+          image: 'evanxuhe/apm-eureka:6.1.0'
           ports:
             - name: http
               containerPort: 8761
+              protocol: TCP
+          env:
+            - name: JAVA_OPTS
+              value: '-javaagent:/skywalking/agent/skywalking-agent.jar'
+            - name: SW_AGENT_NAME
+              value: apm-eureka
+            - name: SW_AGENT_COLLECTOR_BACKEND_SERVICES
+              value: 'skw-oap.kubesphere-sample-dev.svc:11800'
+          resources: {}
           volumeMounts:
-            - name: sidecar
-              mountPath: /sidecar
-      volumes:
-        - name: sidecar  #共享agent文件夹
-          emptyDir: {}
-      restartPolicy: Always
+            - name: skywalking-agent
+              mountPath: /skywalking
