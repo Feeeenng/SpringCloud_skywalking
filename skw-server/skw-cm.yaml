@@ -7,8 +7,8 @@ data:
   SW_CLUSTER: standalone
   SW_CORE_GRPC_PORT: '11800'
   SW_CORE_REST_PORT: '12800'
-  SW_ES_PASSWORD: kubesphere
-  SW_ES_USER: kubesphere
+#  SW_ES_PASSWORD: kubesphere
+#  SW_ES_USER: kubesphere
   SW_NAMESPACE: skywalking_kbs_dev
   SW_STORAGE: elasticsearch7
   SW_STORAGE_ES_CLUSTER_NODES: 'es.kubesphere-sample-dev.svc:9200'
