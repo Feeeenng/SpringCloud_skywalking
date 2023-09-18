@@ -4,7 +4,7 @@ metadata:
   name: apm-eureka
   namespace: kubesphere-sample-dev
   labels:
-    deploy: apm-eureka
+    app: apm-eureka
 spec:
   replicas: 1
   selector:
