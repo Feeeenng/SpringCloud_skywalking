@@ -30,7 +30,7 @@ spec:
             claimName: ui-pv
       containers:
         - name: container-99h058
-          image: 'apache/skywalking-ui:8.5.0'
+          image: 'apache/skywalking-ui:9.5.0'
           ports:
             - name: http-web
               containerPort: 8080
