@@ -18,6 +18,7 @@ spec:
       version: v1
   template:
     metadata:
+      creationTimestamp: null
       labels:
         app: skw-oap
         app.kubernetes.io/name: skw-oap
@@ -30,7 +31,7 @@ spec:
             claimName: oap-pv
       containers:
         - name: container-5v9u6c
-          image: 'apache/skywalking-oap-server:8.5.0-es7'
+          image: 'apache/skywalking-oap-server:9.5.0'
           ports:
             - name: http-12800
               containerPort: 12800
@@ -64,6 +65,21 @@ spec:
                 configMapKeyRef:
                   name: skw-oap-configmap
                   key: SW_CLUSTER
+            - name: SW_HEALTH_CHECKER
+              valueFrom:
+                configMapKeyRef:
+                  name: skw-oap-configmap
+                  key: SW_HEALTH_CHECKER
+            - name: SW_OTEL_RECEIVER
+              valueFrom:
+                configMapKeyRef:
+                  name: skw-oap-configmap
+                  key: SW_OTEL_RECEIVER
+            - name: SW_OTEL_RECEIVER_ENABLED_OC_RULES
+              valueFrom:
+                configMapKeyRef:
+                  name: skw-oap-configmap
+                  key: SW_OTEL_RECEIVER_ENABLED_OC_RULES
           resources:
             limits:
               cpu: '2'
@@ -71,10 +87,3 @@ spec:
           volumeMounts:
             - name: volume-g3o73j
               mountPath: /skywalking/data
-          imagePullPolicy: IfNotPresent
-      restartPolicy: Always
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 25%
-      maxSurge: 25%
