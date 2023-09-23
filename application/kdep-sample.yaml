@@ -1,0 +1,62 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: ks-sample
+  namespace: kubesphere-sample-dev
+  labels:
+    app: ks-sample
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ks-sample
+  template:
+    metadata:
+      labels:
+        app: ks-sample
+    spec:
+      volumes:
+        - name: skywalking-agent
+          emptyDir: {}
+      initContainers:
+        - name: sidecar
+          image: 'apache/skywalking-java-agent:9.0.0-alpine'
+          command:
+            - cp
+            - '-r'
+            - /skywalking/agent
+            - /agent
+          resources: {}
+          volumeMounts:
+            - name: skywalking-agent
+              mountPath: /agent
+      containers:
+        - name: ks-sample
+          image: 'docker.io/feeeng/devops-maven-sample:SNAPSHOT-multi-cluster-74'
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          env:
+            - name: CACHE_IGNORE
+              value: js|html
+            - name: CACHE_PUBLIC_EXPIRATION
+              value: 3d
+            - name: JAVA_OPTS
+              value: '-javaagent:/skywalking/agent/skywalking-agent.jar'
+            - name: SW_AGENT_NAME
+              value: ks-sample
+            - name: SW_AGENT_COLLECTOR_BACKEND_SERVICES
+              value: 'skw-oap.kubesphere-sample-dev.svc:11800'
+          resources: {}
+          volumeMounts:
+            - name: skywalking-agent
+              mountPath: /skywalking
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+              scheme: HTTP
+            timeoutSeconds: 60
+            periodSeconds: 30
+            successThreshold: 3
+            failureThreshold: 60
