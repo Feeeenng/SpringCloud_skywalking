@@ -1,0 +1,17 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: ks-sample
+  namespace: kubesphere-sample-dev
+  labels:
+    app: ks-sample
+spec:
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+      nodePort: 32698
+  selector:
+    app: ks-sample
+  type: NodePort
